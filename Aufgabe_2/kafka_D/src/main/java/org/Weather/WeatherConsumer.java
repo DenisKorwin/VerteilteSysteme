@@ -15,13 +15,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherConsumer {
     public static void main(String[] args) {
         String topic = "weather";
         String bootstrapServer = "10.50.15.52:9092";
-        String groupId = "weather-consumer-group";
+        String groupId = UUID.randomUUID().toString();
 
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
