@@ -31,6 +31,7 @@ public class WeatherConsumer {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         try (Consumer<String, String> consumer = new KafkaConsumer<>(props)) {
+            consumer.seekToBeginning(consumer.assignment());
             consumer.subscribe(Collections.singletonList(topic));
 
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(20));
