@@ -42,6 +42,12 @@ public class KafkaConsumerService implements Runnable {
     // Methode zum Empfangen und Verarbeiten der Nachrichten
     public void listen(UUID gameId) {
         while (true) {
+            try {
+                Thread.sleep(3000);
+            }catch (InterruptedException e){
+
+            }
+
             // Kafka-Nachrichten mit einer Zeitspanne von 500 ms abfragen
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(500));
 
@@ -61,7 +67,7 @@ public class KafkaConsumerService implements Runnable {
         GameEvent gameEvent = GameEvent.fromJSON(jsonData);
         if(gameEvent == null)
             return;
-        if(gameEvent.getGameId() != gameId)
+        if(!gameEvent.getGameId().equals(gameId))
             return;
         if(gameEvent.getState() != GameEventState.OK) {
             if (gameEvent.getMessage() != null)

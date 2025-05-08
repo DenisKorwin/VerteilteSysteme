@@ -14,10 +14,10 @@ public class GameManager {
     private KafkaConsumerService consumerService;
     private final KafkaProducerService producerService;
 
-    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904230");
+    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904240");
     private PlayerType player = PlayerType.PLAYER1;
     private String player1 = "Denis";
-    private String player2 = "Player2";
+    private String player2 = "Manuela";
     private String client1 = "Client1";
     private String client2 = "Client2";
 
@@ -46,10 +46,12 @@ public class GameManager {
         for(int column = 0; column < board.length; column++) {
             for(int row = 0; row < board[0].length; row++) {
                 Color color;
-                switch(board[column][row]) {
-                    case PLAYER1 -> color = new Color(255, 0, 0);
-                    case PLAYER2 -> color = new Color(0, 0, 255);
-                    default -> color = new Color(255, 255, 255);
+                if (board[column][row] == null) {
+                    color = new Color(255, 255, 255);
+                } else if (board[column][row] == PlayerType.PLAYER1) {
+                    color = new Color(255, 0, 0);
+                } else {
+                    color = new Color(0, 0, 255);
                 }
                 frame.updateButton(column, row, color);
             }
