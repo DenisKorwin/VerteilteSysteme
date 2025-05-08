@@ -14,9 +14,9 @@ public class GameManager {
     private KafkaConsumerService consumerService;
     private final KafkaProducerService producerService;
 
-    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904228");
+    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904230");
     private PlayerType player = PlayerType.PLAYER1;
-    private String player1 = "Player1";
+    private String player1 = "Denis";
     private String player2 = "Player2";
     private String client1 = "Client1";
     private String client2 = "Client2";
@@ -105,7 +105,7 @@ public class GameManager {
     }
 
     public void receiveNewGame(GameAction gameAction) {
-        board = new PlayerType[gameAction.getColumns()][gameAction.getRows()];
+        board = new PlayerType[gameAction.getCols()][gameAction.getRows()];
         frame.setDimensions(board.length, board[0].length);
         updateFrame();
     }

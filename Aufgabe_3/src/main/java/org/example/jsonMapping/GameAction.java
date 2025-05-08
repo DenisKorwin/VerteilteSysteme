@@ -22,7 +22,7 @@ public class GameAction {
     private int column;
     private int row;
     private int rows;
-    private int columns;
+    private int cols;
 
     @JsonIgnore
     public static GameAction fromJSON(String json) {
@@ -69,8 +69,8 @@ public class GameAction {
         return row;
     }
 
-    public int getColumns() {
-        return columns;
+    public int getCols() {
+        return cols;
     }
 
     public int getRows() {
@@ -109,8 +109,8 @@ public class GameAction {
         this.row = row;
     }
 
-    public void setColumns(int columns) {
-        this.columns = columns;
+    public void setCols(int cols) {
+        this.cols = cols;
     }
 
     public void setRows(int rows) {
