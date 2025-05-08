@@ -36,6 +36,6 @@ public class Frame extends JFrame {
     }
 
     public void updateButton(int column, int row, Color color) {
-        this.getComponent((rows - row) * columns + column).setBackground(color);
+        this.getComponent((rows - row -1) * columns + column).setBackground(color);
     }
 }

@@ -26,7 +26,7 @@ public class KafkaConsumerService implements Runnable {
 
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.50.15.52:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "linetris-consumer-group");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
@@ -42,6 +42,7 @@ public class KafkaConsumerService implements Runnable {
     // Methode zum Empfangen und Verarbeiten der Nachrichten
     public void listen(UUID gameId) {
         while (true) {
+            System.out.println("Moin");
             try {
                 Thread.sleep(3000);
             }catch (InterruptedException e){

@@ -14,7 +14,7 @@ public class GameManager {
     private KafkaConsumerService consumerService;
     private final KafkaProducerService producerService;
 
-    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904240");
+    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904247");
     private PlayerType player = PlayerType.PLAYER1;
     private String player1 = "Denis";
     private String player2 = "Manuela";
