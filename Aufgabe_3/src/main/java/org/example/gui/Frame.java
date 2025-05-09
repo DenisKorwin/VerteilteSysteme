@@ -37,7 +37,7 @@ public class Frame extends JFrame {
                 button.addActionListener(e -> {
                     gameManager.sendMove(finalX);
                 });
-                button.setSize(100, 100);
+                button.setPreferredSize(new Dimension((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() / (2*columns + 5), (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / (2*rows + 5)));
                 buttons[x][y] = button;
                 this.add(button);
             }

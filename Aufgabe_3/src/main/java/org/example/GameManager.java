@@ -1,9 +1,9 @@
 package org.example;
 
 import org.example.gui.Frame;
+import org.example.jsonMapping.Client;
 import org.example.jsonMapping.GameAction;
-import org.example.jsonMapping.GameActionType;
-import org.example.jsonMapping.GameEvent;
+import org.example.jsonMapping.Player;
 import org.example.jsonMapping.PlayerType;
 
 import javax.swing.*;
@@ -12,11 +12,11 @@ import java.time.Duration;
 import java.util.UUID;
 
 public class GameManager {
-    private final Frame frame;
+    private Frame frame;
     private KafkaConsumerService consumerService;
-    private final KafkaProducerService producerService;
+    private KafkaProducerService producerService;
 
-    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904262");
+    private UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904262");
     private PlayerType player = PlayerType.PLAYER1;
     private String player1 = "Denis";
     private String player2 = "Manuela";
@@ -33,6 +33,10 @@ public class GameManager {
     }
 
     public GameManager() {
+    	new GameMediator(this);
+    }
+    
+    private void startGame() {
         frame = new Frame(this);
         producerService = new KafkaProducerService();
         
@@ -40,14 +44,31 @@ public class GameManager {
         consumerThread = new Thread(consumerService);
         consumerThread.start();
 
+    }
+    
+    public void waitForGame(UUID gameId, Player player1, Client client1) {
+    	this.gameId = gameId;
+    	this.player1 = player1.getName();
+    	this.client1 = client1.getName();
+    	this.player = PlayerType.PLAYER1;
+    	startGame();
+    }
+    
+    public void beginGame(UUID gameId, Player player1, Client client1, Player player2, Client client2) {
+    	this.gameId = gameId;
+    	this.player = PlayerType.PLAYER2;
+    	this.player1 = player1.getName();
+    	this.client1 = client1.getName();
+    	this.player2 = player2.getName();
+    	this.client2 = client2.getName();
+    	startGame();
         try {
 			Thread.sleep(Duration.ofSeconds(1));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        if(player == PlayerType.PLAYER1)
-        	producerService.sendNewGame(gameId, player1, player2, client1, client2);
+    	producerService.sendNewGame(gameId, this.player1, this.player2, this.client1, this.client2);
     }
 
     private void updateFrame() {
@@ -55,11 +76,11 @@ public class GameManager {
             for(int row = 0; row < board[0].length; row++) {
                 Color color;
                 if (board[column][row] == null) {
-                    color = new Color(255, 255, 255);
+                    color = Color.WHITE;
                 } else if (board[column][row] == PlayerType.PLAYER1) {
-                    color = new Color(255, 0, 0);
+                    color = Color.RED;
                 } else {
-                    color = new Color(0, 0, 255);
+                    color = Color.BLUE;
                 }
                 frame.updateButton(column, row, color);
             }
@@ -109,9 +130,9 @@ public class GameManager {
         
         consumerService.stop();
         try {
+        	consumerThread.interrupt();
             consumerThread.join();
         } catch(InterruptedException e) {
-            e.printStackTrace();
         }
         System.exit(0);
     }
