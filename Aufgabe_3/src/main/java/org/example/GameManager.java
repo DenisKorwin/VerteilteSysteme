@@ -2,11 +2,13 @@ package org.example;
 
 import org.example.gui.Frame;
 import org.example.jsonMapping.GameAction;
+import org.example.jsonMapping.GameActionType;
 import org.example.jsonMapping.GameEvent;
 import org.example.jsonMapping.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration;
 import java.util.UUID;
 
 public class GameManager {
@@ -14,7 +16,7 @@ public class GameManager {
     private KafkaConsumerService consumerService;
     private final KafkaProducerService producerService;
 
-    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904247");
+    private final UUID gameId = UUID.fromString("56b71776-490f-48e5-b60f-17dd28904262");
     private PlayerType player = PlayerType.PLAYER1;
     private String player1 = "Denis";
     private String player2 = "Manuela";
@@ -31,15 +33,21 @@ public class GameManager {
     }
 
     public GameManager() {
-        frame = new Frame();
+        frame = new Frame(this);
         producerService = new KafkaProducerService();
-
-        producerService.sendNewGame(gameId, player1, player2, client1, client2);
-
+        
         consumerService = new KafkaConsumerService(gameId, this);
         consumerThread = new Thread(consumerService);
         consumerThread.start();
 
+        try {
+			Thread.sleep(Duration.ofSeconds(1));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if(player == PlayerType.PLAYER1)
+        	producerService.sendNewGame(gameId, player1, player2, client1, client2);
     }
 
     private void updateFrame() {
@@ -59,14 +67,14 @@ public class GameManager {
     }
 
     public void sendMove(int column) {
-        producerService.sendMove(gameId, player, column);
+        producerService.sendMove(gameId, player, column + 1);
     }
 
     public void receiveMove(GameAction gameAction) {
-        for(int row = 0; row < board[gameAction.getColumn()].length; row++) {
-            if(board[gameAction.getColumn()][row] != null)
+        for(int row = 0; row < board[gameAction.getColumn() - 1].length; row++) {
+            if(board[gameAction.getColumn() - 1][row] != null)
                 continue;
-            board[gameAction.getColumn()][row] = gameAction.getPlayer();
+            board[gameAction.getColumn() - 1][row] = gameAction.getPlayer();
             updateFrame();
             return;
         }
@@ -98,6 +106,8 @@ public class GameManager {
                     JOptionPane.INFORMATION_MESSAGE
             );
         }
+        
+        consumerService.stop();
         try {
             consumerThread.join();
         } catch(InterruptedException e) {

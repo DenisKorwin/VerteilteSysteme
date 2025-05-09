@@ -43,6 +43,7 @@ public class KafkaProducerService {
     public void sendMove(UUID gameId, PlayerType player, int column) {
         try {
             GameAction gameAction = new GameAction(GameActionType.move);
+            gameAction.setGameId(gameId);
             gameAction.setPlayer(player);
             gameAction.setColumn(column);
             // JSON-Nachricht für einen Spielzug direkt erstellen

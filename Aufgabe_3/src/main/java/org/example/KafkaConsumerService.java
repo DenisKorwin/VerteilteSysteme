@@ -18,6 +18,7 @@ public class KafkaConsumerService implements Runnable {
     private final Consumer<String, String> consumer;
     private UUID gameId;
     private GameManager gameManager;
+    private boolean running;
 
     // Konstruktor, der das GameModel initialisiert und Kafka-Consumer konfiguriert
     public KafkaConsumerService(UUID gameId, GameManager gameManager) {
@@ -36,22 +37,16 @@ public class KafkaConsumerService implements Runnable {
 
     @Override
     public void run() {
+    	running = true;
         listen(gameId);
     }
 
     // Methode zum Empfangen und Verarbeiten der Nachrichten
     public void listen(UUID gameId) {
-        while (true) {
-            System.out.println("Moin");
-            try {
-                Thread.sleep(3000);
-            }catch (InterruptedException e){
-
-            }
-
+        while (running) {
             // Kafka-Nachrichten mit einer Zeitspanne von 500 ms abfragen
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(500));
-
+            
             // Jede empfangene Nachricht verarbeiten
             for (ConsumerRecord<String, String> record : records) {
                 String jsonData = record.value();
@@ -93,8 +88,7 @@ public class KafkaConsumerService implements Runnable {
         }
     }
 
-    // Methode zum Schließen des Consumers
-    public void close() {
-        consumer.close();
+    public synchronized void stop() {
+    	running = false;
     }
 }
