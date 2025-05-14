@@ -32,7 +32,6 @@ public class Frame extends JFrame {
         for(int y = rows - 1; y >= 0; y--) {
             for(int x = 0; x < columns; x++) {
                 Button button = new Button();
-                int finalY = y;
                 int finalX = x;
                 button.addActionListener(e -> {
                     gameManager.sendMove(finalX);

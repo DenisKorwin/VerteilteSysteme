@@ -108,12 +108,14 @@ public class GameManager {
         updateFrame();
     }
     public void receiveInfo(GameEvent gameEvent){
-        JOptionPane.showMessageDialog(
-                frame,
-                gameEvent.getMessage(),
-                "INFO",
-                JOptionPane.INFORMATION_MESSAGE
-        );
+        if(gameEvent.getActions().get(0).getPlayer() == this.player) {
+            JOptionPane.showMessageDialog(
+                    frame,
+                    gameEvent.getMessage(),
+                    "INFO",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
     }
 
     public void receiveWinAction(GameAction gameAction) {
