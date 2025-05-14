@@ -30,47 +30,46 @@ public class GameManager {
     }
 
     public GameManager() {
-    	new GameMediator(this);
+        new GameMediator(this);
     }
-    
+
     private void startGame() {
         frame = new Frame(this);
         producerService = new KafkaProducerService();
-        
+
         consumerService = new KafkaConsumerService(gameId, this);
         consumerThread = new Thread(consumerService);
         consumerThread.start();
 
     }
-    
+
     public void waitForGame(UUID gameId, Player player1, Client client1) {
-    	this.gameId = gameId;
-    	this.player1 = player1.getName();
-    	this.client1 = client1.getName();
-    	this.player = PlayerType.PLAYER1;
-    	startGame();
+        this.gameId = gameId;
+        this.player1 = player1.getName();
+        this.client1 = client1.getName();
+        this.player = PlayerType.PLAYER1;
+        startGame();
     }
-    
+
     public void beginGame(UUID gameId, Player player1, Client client1, Player player2, Client client2) {
-    	this.gameId = gameId;
-    	this.player = PlayerType.PLAYER2;
-    	this.player1 = player1.getName();
-    	this.client1 = client1.getName();
-    	this.player2 = player2.getName();
-    	this.client2 = client2.getName();
-    	startGame();
+        this.gameId = gameId;
+        this.player = PlayerType.PLAYER2;
+        this.player1 = player1.getName();
+        this.client1 = client1.getName();
+        this.player2 = player2.getName();
+        this.client2 = client2.getName();
+        startGame();
         try {
-			Thread.sleep(Duration.ofSeconds(1));
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	producerService.sendNewGame(gameId, this.player1, this.player2, this.client1, this.client2);
+            Thread.sleep(Duration.ofSeconds(1));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        producerService.sendNewGame(gameId, this.player1, this.player2, this.client1, this.client2);
     }
 
     private void updateFrame() {
-        for(int column = 0; column < board.length; column++) {
-            for(int row = 0; row < board[0].length; row++) {
+        for (int column = 0; column < board.length; column++) {
+            for (int row = 0; row < board[0].length; row++) {
                 Color color;
                 if (board[column][row] == null) {
                     color = Color.WHITE;
@@ -89,8 +88,8 @@ public class GameManager {
     }
 
     public void receiveMove(GameAction gameAction) {
-        for(int row = 0; row < board[gameAction.getColumn() - 1].length; row++) {
-            if(board[gameAction.getColumn() - 1][row] != null)
+        for (int row = 0; row < board[gameAction.getColumn() - 1].length; row++) {
+            if (board[gameAction.getColumn() - 1][row] != null)
                 continue;
             board[gameAction.getColumn() - 1][row] = gameAction.getPlayer();
             updateFrame();
@@ -99,16 +98,17 @@ public class GameManager {
     }
 
     public void receiveDeleteBottomRow(GameAction gameAction) {
-        for(int column = 0; column < board.length; column++) {
-            for(int row = 0; row < board[0].length - 1; row++) {
+        for (int column = 0; column < board.length; column++) {
+            for (int row = 0; row < board[0].length - 1; row++) {
                 board[column][row] = board[column][row + 1];
             }
             board[column][board[0].length - 1] = null;
         }
         updateFrame();
     }
-    public void receiveInfo(GameEvent gameEvent){
-        if(gameEvent.getActions().get(0).getPlayer() == this.player) {
+
+    public void receiveInfo(GameEvent gameEvent) {
+        if (gameEvent.getActions().get(0).getPlayer() == this.player) {
             JOptionPane.showMessageDialog(
                     frame,
                     gameEvent.getMessage(),
@@ -119,7 +119,7 @@ public class GameManager {
     }
 
     public void receiveWinAction(GameAction gameAction) {
-        if(gameAction.getPlayer() == this.player) {
+        if (gameAction.getPlayer() == this.player) {
             JOptionPane.showMessageDialog(
                     frame,
                     "Du hast das Spiel gewonnen.",
@@ -134,12 +134,12 @@ public class GameManager {
                     JOptionPane.INFORMATION_MESSAGE
             );
         }
-        
+
         consumerService.stop();
         try {
-        	consumerThread.interrupt();
+            consumerThread.interrupt();
             consumerThread.join();
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
         }
         System.exit(0);
     }
