@@ -49,7 +49,8 @@ public class GameMediator {
         consumer.subscribe(Collections.singletonList(TOPIC));
         new MediationFrame(this);
     }
-    
+
+    // endet einen Spielvorschlag (Spiel-ID, Spieler 1, Client 1) an Kafka und lässt den Spieler auf den Spielstart warten.
     public void proposeGame(UUID gameId, Player player1, Client client1) {
     	String json = new GameProposal(gameId, player1, client1).toJSON();
     	ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC, "", json);
@@ -59,7 +60,8 @@ public class GameMediator {
     	
     	gameManager.waitForGame(gameId, player1, client1);
     }
-    
+
+    // Wartet auf einen eingehenden Spielvorschlag von einem anderen Spieler und startet das Spiel, sobald ein Vorschlag empfangen wurde.
     public void waitForProposal(Player player2, Client client2) {
     	boolean running = true;
     	while(running) {

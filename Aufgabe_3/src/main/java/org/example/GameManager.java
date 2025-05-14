@@ -29,10 +29,12 @@ public class GameManager {
         new GameManager();
     }
 
+    // Konstruktor – startet die Spielvermittlung über den GameMediator
     public GameManager() {
         new GameMediator(this);
     }
 
+    // Startet ein neues Spiel und initialisiert GUI, Producer und Consumer
     private void startGame() {
         frame = new Frame(this);
         producerService = new KafkaProducerService();
@@ -43,6 +45,7 @@ public class GameManager {
 
     }
 
+    // Wartet auf den Spielstart nach eigenem Vorschlag (Spieler 1)
     public void waitForGame(UUID gameId, Player player1, Client client1) {
         this.gameId = gameId;
         this.player1 = player1.getName();
@@ -51,6 +54,7 @@ public class GameManager {
         startGame();
     }
 
+    // Beginnt ein Spiel nach Empfang eines Vorschlags (Spieler 2) und sendet Start-Nachricht
     public void beginGame(UUID gameId, Player player1, Client client1, Player player2, Client client2) {
         this.gameId = gameId;
         this.player = PlayerType.PLAYER2;
@@ -67,6 +71,7 @@ public class GameManager {
         producerService.sendNewGame(gameId, this.player1, this.player2, this.client1, this.client2);
     }
 
+    // Aktualisiert das GUI (Spielfeldanzeige) basierend auf dem internen Spielzustand
     private void updateFrame() {
         for (int column = 0; column < board.length; column++) {
             for (int row = 0; row < board[0].length; row++) {
@@ -83,10 +88,12 @@ public class GameManager {
         }
     }
 
+    // Sendet einen Spielzug (Spalte) an den Kafka-Producer
     public void sendMove(int column) {
         producerService.sendMove(gameId, player, column + 1);
     }
 
+    // Verarbeitet empfangenen Spielzug und aktualisiert das Spielfeld
     public void receiveMove(GameAction gameAction) {
         for (int row = 0; row < board[gameAction.getColumn() - 1].length; row++) {
             if (board[gameAction.getColumn() - 1][row] != null)
@@ -97,6 +104,7 @@ public class GameManager {
         }
     }
 
+    // Entfernt die unterste Reihe im Spielfeld (nach entsprechender Aktion)
     public void receiveDeleteBottomRow(GameAction gameAction) {
         for (int column = 0; column < board.length; column++) {
             for (int row = 0; row < board[0].length - 1; row++) {
@@ -107,6 +115,7 @@ public class GameManager {
         updateFrame();
     }
 
+    // Zeigt eine Info-Nachricht im GUI an, falls sie den lokalen Spieler betrifft
     public void receiveInfo(GameEvent gameEvent) {
         if (gameEvent.getActions().get(0).getPlayer() == this.player) {
             JOptionPane.showMessageDialog(
@@ -118,6 +127,7 @@ public class GameManager {
         }
     }
 
+    // Verarbeitet das Spielergebnis (Sieg oder Niederlage) und beendet das Spiel
     public void receiveWinAction(GameAction gameAction) {
         if (gameAction.getPlayer() == this.player) {
             JOptionPane.showMessageDialog(
@@ -144,6 +154,7 @@ public class GameManager {
         System.exit(0);
     }
 
+    // Initialisiert das Spielfeld mit gegebener Größe beim Spielstart
     public void receiveNewGame(GameAction gameAction) {
         board = new PlayerType[gameAction.getCols()][gameAction.getRows()];
         frame.setDimensions(board.length, board[0].length);

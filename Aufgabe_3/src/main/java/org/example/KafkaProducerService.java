@@ -12,6 +12,7 @@ public class KafkaProducerService {
     private final static String TOPIC = "game-requests";
     private final Producer<String, String> producer;
 
+    // Initialisiert den Kafka Producer mit den benötigten Properties
     public KafkaProducerService() {
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "10.50.15.52:9092");
@@ -21,6 +22,7 @@ public class KafkaProducerService {
         this.producer = new KafkaProducer<>(props);
     }
 
+    // Sendet eine Nachricht zum Start eines neuen Spiels an Kafka
     public void sendNewGame(UUID gameId, String player1, String player2, String client1, String client2) {
         try {
             GameAction gameAction = new GameAction(GameActionType.newGame);
@@ -40,6 +42,7 @@ public class KafkaProducerService {
         }
     }
 
+    // Sendet eine Nachricht über einen Spielzug an Kafka
     public void sendMove(UUID gameId, PlayerType player, int column) {
         try {
             GameAction gameAction = new GameAction(GameActionType.move);
