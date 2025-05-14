@@ -31,7 +31,7 @@ public class Frame extends JFrame {
         buttons = new Button[columns][rows];
         for(int y = rows - 1; y >= 0; y--) {
             for(int x = 0; x < columns; x++) {
-                Button button = new Button(x + " " + y);
+                Button button = new Button();
                 int finalY = y;
                 int finalX = x;
                 button.addActionListener(e -> {

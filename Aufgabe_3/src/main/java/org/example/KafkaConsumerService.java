@@ -66,8 +66,10 @@ public class KafkaConsumerService implements Runnable {
         if(!gameEvent.getGameId().equals(gameId))
             return;
         if(gameEvent.getState() != GameEventState.OK) {
-            if (gameEvent.getMessage() != null)
+            if (gameEvent.getMessage() != null) {
                 System.out.println(gameEvent.getMessage());
+                gameManager.receiveInfo(gameEvent);
+            }
             return;
         }
         for(GameAction gameAction : gameEvent.getActions()) {

@@ -1,10 +1,7 @@
 package org.example;
 
 import org.example.gui.Frame;
-import org.example.jsonMapping.Client;
-import org.example.jsonMapping.GameAction;
-import org.example.jsonMapping.Player;
-import org.example.jsonMapping.PlayerType;
+import org.example.jsonMapping.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -109,6 +106,14 @@ public class GameManager {
             board[column][board[0].length - 1] = null;
         }
         updateFrame();
+    }
+    public void receiveInfo(GameEvent gameEvent){
+        JOptionPane.showMessageDialog(
+                frame,
+                gameEvent.getMessage(),
+                "INFO",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     public void receiveWinAction(GameAction gameAction) {
